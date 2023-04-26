@@ -2,27 +2,32 @@
   "name": "koa-cms",
   "version": "1.0.0",
   "main": "dist/app.js",
+  "type": "module",
   "scripts": {
-    "dev": "nodemon --ignore tests/ --watch src -e ts,tsx --exec tsx src/main.ts",
-    "build-ts": "tsc",
-    "copy-static-assets": "tsx scripts/copyStaticAssets.ts",
+    "dev": "typescript-esm-node-run  src/main.ts ",
+    "dev-debug": "typescript-esm-node-run  src/main.ts --debug",
+    "dev-watch": "nodemon --ignore tests/ --watch src -e ts,tsx --exec typescript-esm-node-run src/main.ts",
+    "production": "typescript-esm-node-production src/main.ts",
     "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
-    "serve": "node dist/main.js",
-    "build": "npm run lint && npm run build-ts && npm run copy-static-assets",
-    "start": "npm run serve",
-    "test": "jest",
-    "test:watch": "jest --watch"
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prod": "prisma migrate deploy"
   },
   "engines": {
     "node": "14.x.x",
     "npm": "6.x.x"
   },
+  "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "devDependencies": {
+    "@types/chalk": "^2.2.0",
     "@types/cron": "^1.7.2",
-    "@types/jest": "^26.0.22",
     "@types/koa": "2.13.1",
     "@types/koa-bodyparser": "^4.3.0",
     "@types/koa-helmet": "^6.0.4",
+    "@types/koa-router": "^7.4.4",
     "@types/koa__cors": "^3.0.2",
     "@types/koa__router": "^8.0.4",
     "@types/node": "^14.14.37",
@@ -31,16 +36,19 @@
     "@typescript-eslint/eslint-plugin": "^4.20.0",
     "@typescript-eslint/parser": "^4.20.0",
     "eslint": "^7.23.0",
-    "jest": "^26.6.3",
     "nodemon": "^2.0.7",
     "shelljs": "^0.8.4",
-    "ts-jest": "^26.5.4",
-    "tsx": "^3.12.6",
-    "typescript": "^4.2.3"
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
   },
   "dependencies": {
     "@koa/router": "^10.0.0",
-    "@types/chalk": "^2.2.0",
+    "@leokun/koa-controller": "0.0.1",
+    "@leokun/swagger-decorator": "0.0.1",
+    "@leokun/typescript-esm": "0.0.1",
+    "@prisma/client": "4.13.0",
+    "@prisma/engines": "^4.13.0",
+    "caller-callsite": "^5.0.0",
     "chalk": "^5.2.0",
     "class-validator": "^0.13.1",
     "cron": "^1.8.2",
@@ -51,20 +59,10 @@
     "koa-bodyparser": "^4.3.0",
     "koa-helmet": "^7.0.2",
     "koa-jwt": "^4.0.0",
-    "koa-swagger-decorator": "^1.6.4",
-    "reflect-metadata": "^0.1.13",
+    "koa-router": "^12.0.0",
+    "nanoid": "^4.0.2",
+    "prisma": "^4.13.0",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.7.1"
-  },
-  "jest": {
-    "roots": [
-      "<rootDir>"
-    ],
-    "testMatch": [
-      "**/tests/**/*.+(ts|tsx|js)"
-    ],
-    "transform": {
-      "^.+\\.(ts|tsx)$": "ts-jest"
-    }
   }
 }

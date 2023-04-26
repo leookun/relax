@@ -4,21 +4,21 @@ function parseSimpleConfig(config: {[name: string]: any} = {}) {
         if(value === null) {
             return `${key}: null,`;
         }
-        if (typeof value === 'string') {
+        if (typeof value === "string") {
             return `${key}: '${value}',`;
         }
-        if (typeof value === 'number' || typeof value === 'boolean' || typeof value === 'function') {
+        if (typeof value === "number" || typeof value === "boolean" || typeof value === "function") {
             return `${key}: ${value},`;
         }
-        if (typeof value === 'object') {
-          return `${key}: ${JSON.stringify(value)},`
+        if (typeof value === "object") {
+          return `${key}: ${JSON.stringify(value)},`;
         }
-    }).join('\n\t  ');
+    }).join("\n\t  ");
 }
 
 const swaggerHTML = (apiPath: string, options: { swaggerVersion?: string, [name: string]: any } = {}) => {
     const {
-        swaggerVersion = '3.21.0',
+        swaggerVersion = "3.21.0",
         display = {},
     } = options;
   const result = `

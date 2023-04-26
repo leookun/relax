@@ -1,5 +1,4 @@
 {
-  "compileOnSave": true,
   "compilerOptions": {
     "module": "commonjs",
     "experimentalDecorators": true,
@@ -12,7 +11,9 @@
     "inlineSourceMap": true,
     "outDir": "dist",
     "baseUrl": ".",
-    "lib": ["es2017"],
+    "lib": [
+      "es2017"
+    ],
     "pretty": true,
     "declaration": true,
     "paths": {
@@ -30,5 +31,5 @@
   ],
   "exclude": [
     "node_modules"
-]
+  ]
 }

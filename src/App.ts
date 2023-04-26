@@ -1,4 +1,3 @@
-import "reflect-metadata";
 import Koa from "koa";
 import jwt from "koa-jwt";
 import bodyParser from "koa-bodyparser";
@@ -6,6 +5,7 @@ import helmet from "koa-helmet";
 import Logger, { LoggerLevel } from "@/Logger";
 import { Config } from "./config";
 import { CronJob } from "cron";
+import Router from "koa-router";
 
 export default class Application extends Koa {
   public config: Config = {
@@ -52,6 +52,10 @@ export default class Application extends Koa {
     this.use(helmet());
     this.use(this.loggerMiddleware);
     this.use(bodyParser());
+    return this;
+  }
+  public applyController(controller:Router) {
+    this.use(controller.routes());
     return this;
   }
   public startTasksJob(callback?: () => void) {

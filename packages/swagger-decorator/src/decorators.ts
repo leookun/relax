@@ -1,8 +1,11 @@
 
-import is from 'is-type-of';
-import { curry, toLower, clone } from 'ramda';
-import swaggerObject from './swaggerObject';
 
+import { curry, toLower, clone,type } from "ramda";
+import swaggerObject from "./swaggerObject";
+const is={
+  object:(row:unknown)=>type(row)==="Object",
+  array:(row:unknown)=>type(row)==="Array",
+};
 const _desc = (type: string, text: string | any[]) => (
   target: any,
   name: string,
@@ -32,12 +35,12 @@ const _params = (type: string, parameters: { [name: string]: any }) => (
 
   // additional wrapper for body
   let swaggerParameters = parameters;
-  if (type === 'body') {
+  if (type === "body") {
     if (parameters.$ref) {
       swaggerParameters = [
         {
-          name: 'data',
-          description: 'request body',
+          name: "data",
+          description: "request body",
           schema: {
             $ref: parameters.$ref
           }
@@ -46,10 +49,10 @@ const _params = (type: string, parameters: { [name: string]: any }) => (
     } else {
       swaggerParameters = [
         {
-          name: 'data',
-          description: 'request body',
+          name: "data",
+          description: "request body",
           schema: {
-            type: 'object',
+            type: "object",
             required: Object.keys(parameters).filter(parameterName => parameters[parameterName].required),
             properties: _stripInvalidStructureFieldsFromBodyParams(parameters)
           }
@@ -119,7 +122,7 @@ export interface IResponses {
   [name: number]: any;
 }
 const defaultResp: IResponses = {
-  200: { description: 'success' }
+  200: { description: "success" }
 };
 const responses = (responses: IResponses = defaultResp) => (
   target: any,
@@ -133,30 +136,30 @@ const responses = (responses: IResponses = defaultResp) => (
 const desc = curry(_desc);
 
 // description and summary
-const description = desc('description');
+const description = desc("description");
 
-const summary = desc('summary');
+const summary = desc("summary");
 
-const tags = desc('tags');
+const tags = desc("tags");
 
 const params = curry(_params);
 
 // below are [parameters]
 
 // query params
-const query = params('query');
+const query = params("query");
 
 // header params
-const header = params('header');
+const header = params("header");
 
 // path params
-const path = params('path');
+const path = params("path");
 
 // body params
-const body = params('body');
+const body = params("body");
 
 // formData params
-const formData = params('formData');
+const formData = params("formData");
 
 // class decorators
 const orderAll = (weight: number) => (target: any) => {
@@ -193,14 +196,14 @@ const prefix = (prefix: string) => (target: any) => {
   target.prefix = prefix;
 };
 
-const queryAll = (parameters: { [name: string]: any }, filters = ['ALL']) => (target: any) => {
+const queryAll = (parameters: { [name: string]: any }, filters = ["ALL"]) => (target: any) => {
   if (!target.parameters) target.parameters = {};
   target.parameters.query = parameters; // used in wrapper.js for validation
   target.parameters.filters = filters; // used in wrapper.js for validation
   const swaggerParameters = Object.keys(parameters).map(key =>
     Object.assign({ name: key }, parameters[key]));
   swaggerParameters.forEach((item) => {
-    item.in = 'query';
+    item.in = "query";
   });
   swaggerObject.addMulti(target, { query: swaggerParameters }, filters);
 };

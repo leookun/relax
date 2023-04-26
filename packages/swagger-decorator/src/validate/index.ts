@@ -1,7 +1,7 @@
 
-import { clone } from 'ramda';
-import Checker from './check';
-import { Expect } from './check';
+import { clone } from "ramda";
+import Checker from "./check";
+import { Expect } from "./check";
 class InputError extends Error {
   field: string;
   status: number;

@@ -64,13 +64,13 @@ export type PropertyOptions =
  * @param source
  */
 function deepClone(source: any) {
-    if (!source || typeof source !== 'object') {
+    if (!source || typeof source !== "object") {
         return null;
     }
     const targetObj: any = source.constructor === Array ? [] : {};
     for (const keys in source) {
         if (source.hasOwnProperty(keys)) {
-            if (source[keys] && typeof source[keys] === 'object') {
+            if (source[keys] && typeof source[keys] === "object") {
                 targetObj[keys] = source[keys].constructor === Array ? [] : {};
                 targetObj[keys] = deepClone(source[keys]);
             } else {

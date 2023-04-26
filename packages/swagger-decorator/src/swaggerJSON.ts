@@ -1,6 +1,6 @@
-import init from './swaggerTemplate';
-import { getPath, sortObject } from './utils';
-import { Dictionary } from 'ramda';
+import init from "./swaggerTemplate";
+import { getPath, sortObject } from "./utils";
+import { Dictionary } from "ramda";
 /**
  * build swagger json from apiObjects
  */
@@ -9,24 +9,24 @@ const swaggerJSON = (options: {[name: string]: any} = {}, apiObjects: any) => {
     title,
     description,
     version,
-    prefix = '',
+    prefix = "",
     swaggerOptions = {}
   } = options;
   const swaggerJSON: any = init(title, description, version, swaggerOptions);
   const paths: Dictionary<{[method: string]: any}> = {};
   Object.keys(apiObjects).forEach((key) => {
     const value = apiObjects[key];
-    if (!Object.keys(value).includes('request')) {
+    if (!Object.keys(value).includes("request")) {
       return;
     }
 
     const { method } = value.request;
     let { path } = value.request;
     path = getPath(prefix, value.prefix ? `${value.prefix}${path}` : path); // 根据前缀补全path
-    const summary = value.summary || '';
+    const summary = value.summary || "";
     const description = value.description || summary;
     const responses = value.responses || {
-      200: { description: 'success' }
+      200: { description: "success" }
     };
     const {
       query = [],
@@ -48,7 +48,7 @@ const swaggerJSON = (options: {[name: string]: any} = {}, apiObjects: any) => {
     }
 
     // add content type [multipart/form-data] to support file upload
-    const consumes = formData.length > 0 ? ['multipart/form-data'] : undefined;
+    const consumes = formData.length > 0 ? ["multipart/form-data"] : undefined;
 
     paths[path][method] = {
       consumes,

@@ -1,41 +1,41 @@
-import _path from 'path';
-import globby from 'globby';
-import is from 'is-type-of';
-import { Dictionary } from 'ramda';
+import _path from "path";
+import globby from "globby";
+
+import { Dictionary,type } from "ramda";
 
 
 // eg. /api/{id} -> /api/:id
 const convertPath = (path: string) => {
-  const re = new RegExp('{(.*?)}', 'g');
-  return path.replace(re, ':$1');
+  const re = new RegExp("{(.*?)}", "g");
+  return path.replace(re, ":$1");
 };
 
 const getPath = (prefix: string, path: string) =>
-  `${prefix}${path}`.replace('//', '/');
+  `${prefix}${path}`.replace("//", "/");
 
 const reservedMethodNames = [
-  'middlewares',
-  'name',
-  'constructor',
-  'length',
-  'prototype',
-  'parameters',
-  'prefix',
+  "middlewares",
+  "name",
+  "constructor",
+  "length",
+  "prototype",
+  "parameters",
+  "prefix",
 ];
 
 enum allowedMethods {
-  GET = 'get',
-  POST = 'post',
-  PUT = 'put',
-  PATCH = 'patch',
-  DELETE = 'delete'
+  GET = "get",
+  POST = "post",
+  PUT = "put",
+  PATCH = "patch",
+  DELETE = "delete"
 }
 
-const getFilepaths = (dir: string, recursive: boolean = true, ignore: string[] = []) => {
+const getFilepaths = (dir: string, recursive = true, ignore: string[] = []) => {
   const ignoreDirs = ignore.map((path => `!${path}`));
   const paths = recursive
-    ? globby.sync(['**/*.js', '**/*.ts', ...ignoreDirs], { cwd: dir })
-    : globby.sync(['*.js', '*.ts', ...ignoreDirs], { cwd: dir });
+    ? globby.sync(["**/*.js", "**/*.ts", ...ignoreDirs], { cwd: dir })
+    : globby.sync(["*.js", "*.ts", ...ignoreDirs], { cwd: dir });
   return paths.map(path => _path.join(dir, path));
 };
 
@@ -43,17 +43,17 @@ const loadModule = (filepath: string) => {
   const obj = require(filepath);
   if (!obj) return obj;
   // it's es module
-  if (obj.__esModule) return 'default' in obj ? obj.default : obj;
+  if (obj.__esModule) return "default" in obj ? obj.default : obj;
   return obj;
 };
 
 const loadClass = (filepath: string) => {
   const cls = loadModule(filepath);
-  if (is.class(cls)) return cls;
+  if (type(cls)==="Function") return cls;
   return false;
 };
 
-const loadSwaggerClasses = (dir: string = '', options: { recursive?: boolean; ignore?: string[] } = {}) => {
+const loadSwaggerClasses = (dir = "", options: { recursive?: boolean; ignore?: string[] } = {}) => {
   dir = _path.resolve(dir);
   const { recursive = true } = options;
   return getFilepaths(dir, recursive, options.ignore)
@@ -61,7 +61,7 @@ const loadSwaggerClasses = (dir: string = '', options: { recursive?: boolean; ig
     .filter(cls => cls);
 };
 
-const swaggerKeys = (className: String, methods: [String]) => methods.map(m => `${className}- ${m}`);
+const swaggerKeys = (className: string, methods: [string]) => methods.map(m => `${className}- ${m}`);
 
 /**
  * Sorts an object (dictionary) by value returned by the valSelector function.
@@ -80,7 +80,7 @@ const sortObject = <TValue>(
 
   return sortedKeys.reduce((sorted: Dictionary<TValue>, k) => {
     let value = obj[k];
-    if (callbackFn && is.function(callbackFn)) {
+    if (callbackFn && type(callbackFn)==="Function") {
       value = callbackFn(value);
     }
     sorted[k] = value;

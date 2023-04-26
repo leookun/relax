@@ -1,0 +1,65 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "debian-openssl-1.1.x", "rhel-openssl-1.0.x", "debian-openssl-3.0.x", "linux-musl", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id         Int    @id @default(autoincrement())
+  email      String @unique
+  userName   String @unique
+  wechatInfo Json?
+  head       String
+  password   String
+}
+
+model AdminUser {
+  id         Int    @id @default(autoincrement())
+  wechatInfo Json?
+  email      String @unique
+  userName   String @unique
+  password   String
+  head       String
+  posts      Int[]
+}
+
+model UserLevel {
+  id    Int    @id @default(autoincrement())
+  title String
+  price BigInt
+}
+
+model Comments {
+  id      Int    @id @default(autoincrement())
+  to      Int
+  userId  Int
+  content String
+  postId  Int
+  author  Int
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String
+  image     String?
+  published Boolean @default(false)
+  author    Int
+  classifys Int[]
+  tags      Int[]
+}
+
+model Classify {
+  id    Int     @id @default(autoincrement())
+  title String
+  image String?
+}
+
+model Tags {
+  id      Int    @id @default(autoincrement())
+  content String
+}

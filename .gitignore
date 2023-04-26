@@ -2,6 +2,7 @@
 logs
 node_modules
 bower_components
+migrations
 .idea
 *.iml
 .DS_Store

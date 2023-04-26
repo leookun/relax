@@ -1,12 +1,19 @@
 /**
  * used for building swagger docs object
  */
-import is from 'is-type-of';
 
-import { reservedMethodNames } from './utils';
-import { Data } from './types';
-import { uniq, uniqBy } from 'ramda';
 
+import { reservedMethodNames } from "./utils";
+import { uniq, uniqBy,type} from "ramda";
+export interface Data {
+  [key: string]: {
+    [name: string]: any;
+  };
+}
+const is={
+  object:(row:unknown)=>type(row)==="Object",
+  array:(row:unknown)=>type(row)==="Array",
+};
 class SwaggerObject {
   data: Data;
 
@@ -15,7 +22,7 @@ class SwaggerObject {
   }
   add(target: any, name: string, content: any) {
     if (!is.object(content)) {
-      throw new Error('illegal params [content] for SwaggerObject.add');
+      throw new Error("illegal params [content] for SwaggerObject.add");
     }
 
     // when using non-static method decorators
@@ -46,7 +53,7 @@ class SwaggerObject {
   }
 
   // only add to methods with a @request decorator
-  addMulti(target: any, content: any, filters = ['ALL']) {
+  addMulti(target: any, content: any, filters = ["ALL"]) {
     const staticMethods = Object.getOwnPropertyNames(target)
       .filter(method => !reservedMethodNames.includes(method));
     const methods = Object.getOwnPropertyNames(target.prototype)
@@ -57,7 +64,7 @@ class SwaggerObject {
       if (!this.data[key] || !this.data[key].request) return;
       filters = filters.map(i => i.toLowerCase());
       if (
-        filters.includes('all') ||
+        filters.includes("all") ||
         filters.includes(this.data[key].request.method)
       ) {
         this.add(target, name, content);

@@ -1,0 +1,11 @@
+{
+  "name": "@leokun/typescript-esm",
+  "version": "0.0.1",
+  "main": "index.js",
+  "bin": {
+    "typescript-esm-node-run": "./typescript-esm-node-run.js",
+    "typescript-esm-node-production": "./typescript-esm-node-production.js"
+  },
+  "type": "module",
+  "license": "MIT"
+}
