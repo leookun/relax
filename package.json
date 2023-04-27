@@ -4,11 +4,11 @@
   "main": "dist/app.js",
   "type": "module",
   "scripts": {
-    "dev": "typescript-esm-node-run  src/main.ts ",
-    "dev-debug": "typescript-esm-node-run  src/main.ts --debug",
-    "dev-watch": "nodemon --ignore tests/ --watch src -e ts,tsx --exec typescript-esm-node-run src/main.ts",
-    "production": "typescript-esm-node-production src/main.ts",
-    "lint": "tsc --noEmit && eslint \"**/*.{js,ts}\" --quiet --fix",
+    "serve": "typescript-esm-node-run  src/main.ts ",
+    "serve-debug": "typescript-esm-node-run  src/main.ts --debug",
+    "serve-watch": "nodemon --ignore tests/ --watch src -e ts,tsx --exec typescript-esm-node-run src/main.ts",
+    "start": "typescript-esm-node-production src/main.ts",
+    "lint": "eslint --fix packages/**/*.ts --config ./.eslintrc --ignore-path .eslintignore ",
     "prisma:generate": "prisma generate",
     "prisma:push": "prisma db push",
     "prod": "prisma migrate deploy"
@@ -33,21 +33,18 @@
     "@types/node": "^14.14.37",
     "@types/shelljs": "^0.8.8",
     "@types/winston": "^2.4.4",
-    "@typescript-eslint/eslint-plugin": "^4.20.0",
-    "@typescript-eslint/parser": "^4.20.0",
-    "esbuild": "^0.17.18",
-    "esbuild-node-tsc": "^2.0.5",
-    "eslint": "^7.23.0",
+    "eslint": "^7.3.0",
+    "eslint-config-prettier": "^8.8.0",
+    "eslint-plugin-prettier": "^4.2.1",
     "nodemon": "^2.0.7",
-    "shelljs": "^0.8.4",
-    "ts-node": "^10.9.1",
-    "tsconfig-paths": "^4.2.0"
+    "prettier": "^2.8.8",
+    "shelljs": "^0.8.4"
   },
   "dependencies": {
     "@koa/router": "^10.0.0",
+    "@leokun/eslint-config": "0.0.1",
     "@leokun/koa-controller": "0.0.1",
-    "@leokun/swagger-decorator": "0.0.1",
-    "@leokun/typescript-esm": "0.0.1",
+    "@leokun/typescript": "0.0.1",
     "@prisma/client": "4.13.0",
     "@prisma/engines": "^4.13.0",
     "caller-callsite": "^5.0.0",
@@ -64,6 +61,7 @@
     "koa-router": "^12.0.0",
     "nanoid": "^4.0.2",
     "prisma": "^4.13.0",
+    "typescript": "4",
     "winston": "^3.3.3",
     "winston-daily-rotate-file": "^4.7.1"
   }

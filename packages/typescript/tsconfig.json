@@ -1,14 +1,12 @@
 {
-  "extends": "ts-node/node14/tsconfig.json",
   "compilerOptions": {
-    "module": "ESNext",
-    "allowJs": true,
-    "lib": ["ES5"],
     "target": "es2020",
-    "strict": false,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
-    "moduleResolution": "node"
+    "moduleResolution": "node",
+    "module": "ESNext",
+    "allowJs": true,
+    "strict": false,
   }
 }

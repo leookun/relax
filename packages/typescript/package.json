@@ -1,8 +1,15 @@
 {
   "name": "@leokun/typescript",
   "version": "0.0.1",
-  "description": "",
   "main": "index.js",
-  "author": "",
-  "license": "ISC"
+  "bin": {
+    "typescript": "./typescript-esm-node-run.js",
+    "typescript-production": "./typescript-esm-node-production.js"
+  },
+  "type": "module",
+  "license": "MIT",
+  "devDependencies": {
+    "ts-node": "^10.9.1",
+    "tsconfig-paths": "^4.2.0"
+  }
 }

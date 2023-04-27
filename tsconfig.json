@@ -1,8 +1,7 @@
 {
-  "extends": "@leokun/typescript-esm",
+  "extends": "@leokun/typescript",
   "compilerOptions": {
     "baseUrl": ".",
-    "outDir": "dist",
     "paths": {
       "@/*": [
         "src/*"
