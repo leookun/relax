@@ -52,6 +52,10 @@ export default class Application extends Koa {
     this.use(helmet());
     this.use(this.loggerMiddleware);
     this.use(bodyParser());
+    this.use(async (ctx,next)=>{
+      ctx.Application=this;
+      await next();
+    });
     return this;
   }
   public applyController(controller:Router) {

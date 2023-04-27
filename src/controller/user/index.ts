@@ -3,7 +3,8 @@ export default createController(
     get("/index"),
     prefix("/user"),
     controller(
-        async (ctx)=>{
+        async (ctx,app)=>{
+          const {Application}=ctx;
           ctx.body="你好吗";
         }
     )
