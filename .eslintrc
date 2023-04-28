@@ -1,7 +1,4 @@
 {
   "root": true,
-  "extends": [
-    "plugin:prettier/recommended",
-    "@leokun/eslint-config"
-  ]
+  "extends": ["@leokun/eslint-config"]
 }

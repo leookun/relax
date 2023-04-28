@@ -1,0 +1,31 @@
+{
+  "name": "@leokun/koa-application",
+  "version": "0.0.1",
+  "main": "src/index.ts",
+  "type": "module",
+  "license": "MIT",
+  "src": "src/index.ts",
+  "types": "src/index.ts",
+  "devDependencies": {
+    "@types/chalk": "^2.2.0",
+    "@types/cron": "^1.7.2",
+    "@types/koa": "2.13.1",
+    "@types/koa-bodyparser": "^4.3.0",
+    "@types/koa-helmet": "^6.0.4",
+    "@types/winston": "^2.4.4",
+    "@types/shelljs": "^0.8.8"
+  },
+  "dependencies": {
+    "dayjs": "^1.11.7",
+    "shelljs": "^0.8.4",
+    "chalk": "^5.2.0",
+    "cron": "^1.8.2",
+    "helmet": "^6.1.5",
+    "koa": "^2.13.1",
+    "koa-bodyparser": "^4.3.0",
+    "koa-helmet": "^7.0.2",
+    "koa-jwt": "^4.0.0",
+    "winston": "^3.3.3",
+    "winston-daily-rotate-file": "^4.7.1"
+  }
+}

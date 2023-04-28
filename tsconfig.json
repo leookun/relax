@@ -1,5 +1,5 @@
 {
-  "extends": "@leokun/typescript",
+  "extends": "@leokun/typescript-config",
   "compilerOptions": {
     "baseUrl": ".",
     "paths": {

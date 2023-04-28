@@ -5,5 +5,7 @@
   "type": "module",
   "license": "MIT",
   "src": "src/index.ts",
-  "types": "src/index.ts"
+  "types": "src/index.ts",
+  "devDependencies": {"@types/koa-router": "^7.4.4"},
+  "dependencies": {"koa-router": "^12.0.0"}
 }

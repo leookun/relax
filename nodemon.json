@@ -1,0 +1,12 @@
+{
+    "verbose": true,
+    "ignore": [
+        "tests/",
+        "node_modules/"
+    ],
+    "watch": [
+        "src",
+        "packages"
+    ],
+    "exec": "cross-env NODE_NO_WARNINGS=1 node --loader @esbuild-kit/esm-loader src/main.ts"
+}
