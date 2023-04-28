@@ -8,7 +8,7 @@ import {
 export default createController(
   get("/index"),
   prefix("/user"),
-  controller(async (ctx, app) => {
+  controller(async (ctx, app, services, next) => {
     ctx.body = "hello word";
   })
 );

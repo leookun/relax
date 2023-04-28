@@ -1,6 +1,6 @@
-Opinionated koa application
+** relax is an opinionated koa application. ** All implementation is all in [packages/\*](./tree/main/packages)
 
-### Minimal chained necessary api
+- Minimal chained api
 
 ```ts
 import Application from "@leokun/koa-application";
@@ -13,7 +13,7 @@ new Application(config)
   .applyController(userController);
 ```
 
-### Compose Controller
+- Compose Controller
 
 ```ts
 import {
@@ -32,7 +32,7 @@ export default createController(
 );
 ```
 
-### Prisma Services
+- Prisma Services
 
 ```ts
 export default (prisma: InstanceType<typeof PrismaClient>) => {
@@ -50,5 +50,3 @@ export default (prisma: InstanceType<typeof PrismaClient>) => {
   };
 };
 ```
-
-All Implementation is all in packages/
