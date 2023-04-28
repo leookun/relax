@@ -1,52 +1,63 @@
-** relax is an opinionated koa application. ** All implementation is all in [packages/\*](./tree/main/packages)
+> something are not ready,destructive changes are possible 
+#### Relax is an opinionated koa application.
 
-- Minimal chained api
+Minimal chained api
 
 ```ts
+import "@/controller/users"
 import Application from "@leokun/koa-application";
-import userController from "@/controller/user/index";
+import {enforceController} from "@leokun/koa-controller";
+import services from '@leokun/koa-services'
 import config from "@/config";
 
 new Application(config)
-  .start(Application.onStartApp)
+  .applyServices(services)
+  .applyController(enforceController)
   .startTasksJob(Application.onStartTasksJob)
-  .applyController(userController);
+  .start(Application.onStartApp)
+
 ```
 
-- Compose Controller
+Compose Controller
 
 ```ts
-import {
-  createController,
-  get,
-  controller,
-  prefix,
-} from "@leokun/koa-controller";
+import { createController, get, post, controller, prefix } from "@leokun/koa-controller";
+import * as User from "@/services/User"
 
-export default createController(
+createController(
+  prefix("/users"),
   get("/index"),
-  prefix("/user"),
-  controller(async (ctx, app, services, next) => {
-    ctx.body = "hello word";
+  controller(async (ctx) => {
+    ctx.body = await User.getUsers()
   })
 );
+
+createController(
+  prefix("/users"),
+  post("/register"),
+  controller(async (ctx) => {
+    const {email,password}=ctx.request.body as {email:string,password:string}
+    ctx.body = (await User.register(email,password))
+  })
+);
+
 ```
 
-- Prisma Services
+Prisma as Services
 
 ```ts
-export default (prisma: InstanceType<typeof PrismaClient>) => {
-  return {
-    async register(email: string, password: string) {
-      return await prisma.user.create({
-        data: {
-          email,
-          password,
-          userName: nanoid(),
-          head: "",
-        },
-      });
+import services from '@leokun/koa-services'
+export  async function register(email: string, password: string) {
+  return (await services.user.create({
+    data: {
+      email,
+      password,
+      userName: nanoid(),
+      head: '',
     },
-  };
-};
+  }))?.userName
+}
+export async function getUsers() {
+  return await services.user.findMany()
+}
 ```

@@ -68,7 +68,7 @@ export class Logger {
   }
   public log(level: LoggerLevel, message?: string) {
     if (message) {
-      this.loggers[level].log('level', message);
+      this.loggers[level].log(level, message);
     }
     return this;
   }

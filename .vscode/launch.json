@@ -2,14 +2,12 @@
   "version": "0.2.0",
   "configurations": [
     {
-      "name": "debugger",
-      "type": "node",
-      "request": "attach",
-      "address": "localhost",
-      "port": 9222,
-      "restart": true,
-      "trace": true,
-      "skipFiles": ["<node_internals>/**"]
-    }
+      "command": "npm run dev",
+      "name": "Run npm start",
+      "request": "launch",
+      "type": "node-terminal"
+    },
+    
+   
   ]
 }

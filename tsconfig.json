@@ -1,6 +1,7 @@
 {
   "extends": "@leokun/typescript-config",
   "compilerOptions": {
+    "strict": false,
     "baseUrl": ".",
     "paths": {
       "@/*": [

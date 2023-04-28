@@ -1,5 +1,6 @@
 import Koa from "koa";
 import jwt from "koa-jwt";
+
 import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import { Logger, LoggerLevel } from "./common/logger";
@@ -18,14 +19,16 @@ export default class Application extends Koa {
     cronJobExpression: "0 * * * *",
   };
   public logger: InstanceType<typeof Logger>;
+  public services: any;
+  public controller: boolean;
   constructor(options: Config) {
     super();
     this.config = options;
     this.logger = new Logger();
     this.applyMiddleware();
   }
-  static onStartApp() {
-    new Logger().info("App Started! ");
+  static onStartApp(port:string|number) {
+    new Logger().info(`App Started On Port ${port}`);
   }
   static onStartTasksJob() {
     new Logger().info("TasksJobs Started!");
@@ -36,9 +39,8 @@ export default class Application extends Koa {
       await next();
     } catch (error) {
       ctx.status = error.status || 500;
-      ctx.body = error.message;
       const ms = new Date().getTime() - start;
-      let logLevel: LoggerLevel;
+      let logLevel: LoggerLevel="error";
       if (ctx.status >= 500) {
         logLevel = "error";
       } else if (ctx.status >= 400) {
@@ -47,21 +49,23 @@ export default class Application extends Koa {
         logLevel = "info";
       }
       const msg = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
-      this.logger.log(logLevel, msg);
+      ctx.body = msg;
+      new Logger().log(logLevel, `${msg} :${error.message}`);
     }
   }
   public applyMiddleware() {
     this.use(helmet());
     this.use(this.loggerMiddleware);
     this.use(bodyParser());
-    this.use(async (ctx, next) => {
-      ctx.Application = this;
-      await next();
-    });
     return this;
   }
-  public applyController(controller: Router) {
-    this.use(controller.routes());
+  public applyController(enforceController: (app: Application) => Application) {
+    this.controller=true
+    enforceController(this)
+    return this;
+  }
+  public applyServices(services: any) {
+    this.services=services
     return this;
   }
   public startTasksJob(callback = (() => {}) as CronCommand) {
@@ -72,9 +76,17 @@ export default class Application extends Koa {
     });
     return this;
   }
-  public start(callback: () => void) {
+  public start(callback: (port?:number|string) => void) {
+    if(!this.controller){
+      this.logger.error("Controller Not For Ready. Call `applyController` First")
+      return 
+    }
+    if(!this.services){
+      this.logger.error("Services Not For Ready. Call `applyServices` First")
+      return 
+    }
     const { port } = this.config;
-    this.listen(port, callback);
+    this.listen(port, ()=>callback(port));
     return this;
   }
 }

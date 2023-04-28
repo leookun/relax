@@ -1,5 +1,6 @@
 import Router from 'koa-router';
 import compose from 'koa-compose';
+import Application from '@leokun/koa-application';
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
 export type State<T = unknown> = [T, (setter: Setter<T>) => T];
@@ -21,6 +22,16 @@ export type ControllerEnhance = <
 export type Controller = (
   ...controllerEnhance: ControllerEnhance[]
 ) => Router<{}>;
+
+const Routers:Router[]=[]
+
+export const enforceController=(app:Application)=>{
+  Routers.forEach((routers)=>{
+    app.use(routers.routes())
+  })
+  return app
+}
+
 export const createController: Controller = (...controllerEnhances) => {
   type Method = 'post' | 'get';
   let path = '/',
@@ -70,6 +81,7 @@ export const createController: Controller = (...controllerEnhances) => {
   const middleware = compose(middlewares);
   const router = new Router({prefix: prefix || '',});
   router[method](path, middleware);
+  Routers.push(router)
   return router;
 };
 
@@ -100,8 +112,14 @@ export const prefix =
       return next;
     };
 
-export const controller =
-  (middleware: Middleware): ControllerEnhance =>
+export const controller =<
+RquestBodyT={},
+ResponseBodyT = any,
+ContextT = DefaultContext&{request:{body:Partial<RquestBodyT>}},
+StateT = DefaultState, 
+
+>
+  (middleware: Middleware<StateT,ContextT,ResponseBodyT>): ControllerEnhance =>
     () => {
       return middleware;
     };
