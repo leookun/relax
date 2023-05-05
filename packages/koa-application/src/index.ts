@@ -1,9 +1,12 @@
 import Koa from "koa";
 import nodemailer from "nodemailer";
 import {createClient} from "redis";
+import { enforceController } from "@leokun/koa-controller";
+
 import jwt from "koa-jwt";
 import { fileURLToPath } from 'url';
-import path ,{resolve}from 'path';
+import path,{resolve}from 'path';
+import {globSync} from 'glob';
 import fs from 'node:fs';
 import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
@@ -22,6 +25,7 @@ export * from "./common/logger";
 export type SendCodeEmail=(to:string,body:{code:string,userName:string})=>Promise<true>
 export type RequireCheck=(params:Record<string,unknown>)=>void
 export type Reply=<T,>(params?:T)=>void
+export type ErrorReply=<T,>(msg:T)=>void
 export type Redis=ReturnType<typeof createClient>
 const createApp=(config:Config)=>{
   let hasController=false;
@@ -56,6 +60,7 @@ const createApp=(config:Config)=>{
       emailClient,
       sendCodeEmail,
       async start(callback?: (port?:number|string) => void) {
+        app.applyController(enforceController)
         if(!hasController){
           logger.error("Services Not For Ready. Call `applyServices` First")
           return 
@@ -89,18 +94,23 @@ const createApp=(config:Config)=>{
             logLevel = "info";
           }
           const msg = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
-          ctx.body = {
-            error:msg,
-            message:error.message||'',
-          }
+          ctx.body = {error:msg}
           new Logger().log(logLevel, `${msg} 响应信息:${error.message}`);
         }
       },
       async replyMiddleware(ctx: Koa.Context, next: Koa.Next){
+        const start = new Date().getTime();
         const reply:Reply=(body)=>{
           ctx.body={data:body||null}
         }
+        const error:ErrorReply=(msg)=>{
+          ctx.status=500
+          const ms = new Date().getTime() - start;
+          const error = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
+          ctx.body= {error,msg}
+        }
         ctx.reply=reply
+        ctx.error=error
         await next()
       },
       async requireCheckMiddleware(ctx: Koa.Context, next: Koa.Next){
@@ -148,7 +158,15 @@ const createApp=(config:Config)=>{
       applyController(enforceController:(app: any) => any) {
         app.applyMiddleware()
         hasController=true
-        enforceController(app)
+        const controllerPaths=globSync([
+          resolve(process.cwd(),"./src/controller","./**/*.ts"),
+          "!"+resolve(process.cwd(),"./src/controller","./**/*.ts")
+        ])
+        Promise.all(controllerPaths.map(async path=>{
+          await import(path)
+        })).then((controllers)=>{
+          enforceController(app)
+        })
         return app;
       },
       startTasksJob(callback?: CronCommand) {

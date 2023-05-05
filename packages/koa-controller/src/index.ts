@@ -1,10 +1,22 @@
 import Router from 'koa-router';
 import compose from 'koa-compose';
-import {SendCodeEmail,RequireCheck,Reply,Application,Redis} from '@leokun/koa-application';
+import {
+  SendCodeEmail,
+  RequireCheck,Reply,ErrorReply, Application,Redis
+} from '@leokun/koa-application';
 import { Logger } from "@leokun/koa-application/src/common/logger";
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
 export type State<T = unknown> = [T, (setter: Setter<T>) => T];
+export type ContextT<RquestBodyT = any> = DefaultContext&{
+  request:{body:Partial<RquestBodyT>},
+  logger: InstanceType<typeof Logger>;
+  sendCodeEmail: SendCodeEmail;
+  requireCheck: RequireCheck;
+  reply: Reply;
+  error: ErrorReply;
+  redis: Redis;
+}
 export type ControllerEnhanceParam = {
   swaggerState: State<{}>;
   methodState: State<string>;
@@ -34,9 +46,6 @@ export const enforceController=(app:Application)=>{
 }
 
 export const createController: Controller = (...controllerEnhances) => {
-  
-
-
   type Method = 'post' | 'get';
   let path = '/',
     method: Method = 'get',
@@ -107,7 +116,7 @@ export const createController: Controller = (...controllerEnhances) => {
 };
 
 export const post =
-  (path: string): ControllerEnhance =>
+  (path="/"): ControllerEnhance =>
     ({ pathState, methodState, next }) => {
       const [, pathSetter] = pathState;
       const [, methodSetter] = methodState;
@@ -117,7 +126,7 @@ export const post =
     };
 
 export const get =
-  (path: string): ControllerEnhance =>
+  (path="/"): ControllerEnhance =>
     ({ pathState, methodState, next }) => {
       const [, pathSetter] = pathState;
       const [, methodSetter] = methodState;
@@ -137,17 +146,9 @@ export const prefix =
 export const controller =<
 RquestBodyT={},
 ResponseBodyT = any,
-ContextT = DefaultContext&{
-  request:{body:Partial<RquestBodyT>},
-  logger: InstanceType<typeof Logger>;
-  sendCodeEmail: SendCodeEmail;
-  requireCheck: RequireCheck;
-  reply: Reply;
-  redis: Redis;
-},
 StateT = DefaultState
 >
-  (middleware: Middleware<StateT,ContextT,ResponseBodyT>): ControllerEnhance =>
+  (middleware: Middleware<StateT,ContextT<RquestBodyT>,ResponseBodyT>): ControllerEnhance =>
     () => {
       return middleware;
     };

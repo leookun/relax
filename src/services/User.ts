@@ -3,14 +3,22 @@ const nanoid = customAlphabet('123456789QWERTYUPASDFGHJKZXCVBNM', 10);
 import services from '@leokun/koa-services'
 
 export  async function register(email: string, password: string) {
-  return (await services.user.create({
+  const registedUser=await services.user.findFirst({where:{email}})
+  if(registedUser){
+    return false
+  }
+  return  !!await services.user.create({
     data: {
       email,
       password,
       userName: nanoid(),
       head: '',
     },
-  }))?.userName
+  })
+}
+export  async function isUserExist(email: string) {
+  const registedUser=await services.user.findFirst({where:{email}})
+  return !!registedUser
 }
 
 export async function getUsers() {

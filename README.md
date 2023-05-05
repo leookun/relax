@@ -1,26 +1,32 @@
-> something are not ready,destructive changes are possible 
 #### Relax is an opinionated koa application.
 
-CreateApp
+CreateApp with [Config]("./packages/koa-application/src/common/config.ts")
+
+The application automatically has the following functions
+- Logger Context (Good-looking and easy to use)
+- Email Context (Some templates are built in)
+- Redis Context
+- Formated Response(or Error Response) Context
+- Required Params Check Context
+- BodyParser And Helmet Context
 
 ```ts
-
-import "@/controller/users/index"
 import createApp from "@leokun/koa-application";
 import config from "@/config"
-import { enforceController } from "@leokun/koa-controller";
-
-createApp(config)
-  .applyController(enforceController)
-  .startTasksJob()
-  .start()
+createApp(config).start()
 
 ```
 
 Compose Controller
 
+Make sure your controller file location under the src/controller, such as ` controller/users/login.ts `, routing address will automatically be registered for `/users/login`
+
+You can override the route path using helper functions provided by the controller. The `prefix`, `get`, and `post` functions can be used in combination
+
+The controller function accepts a middleware, and ctx is already a fully typed object.
+
 ```ts
-import { createController, get, post, controller, } from "@leokun/koa-controller";
+import { createController, get, post, controller,prefix } from "@leokun/koa-controller";
 import * as User from "@/services/User"
 
 createController(
@@ -45,23 +51,4 @@ createController(
 );
 
 
-```
-
-Atom Services
-
-```ts
-import services from '@leokun/koa-services'
-export  async function register(email: string, password: string) {
-  return (await services.user.create({
-    data: {
-      email,
-      password,
-      userName: nanoid(),
-      head: '',
-    },
-  }))?.userName
-}
-export async function getUsers() {
-  return await services.user.findMany()
-}
 ```
