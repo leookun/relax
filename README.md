@@ -1,6 +1,6 @@
 #### Relax is an opinionated koa application.
 
-CreateApp with [Config]("./packages/koa-application/src/common/config.ts")
+CreateApp with [Config](packages/koa-application/src/common/config.ts)
 
 The application automatically has the following functions
 - Logger Context (Good-looking and easy to use)
