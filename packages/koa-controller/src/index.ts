@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import compose from 'koa-compose';
-import Application,{SendCodeEmail,RequireCheck,Reply} from '@leokun/koa-application';
+import {SendCodeEmail,RequireCheck,Reply,Application} from '@leokun/koa-application';
 import { Logger } from "@leokun/koa-application/src/common/logger";
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
@@ -33,7 +33,7 @@ export const enforceController=(app:Application)=>{
   return app
 }
 
-export const create: Controller = (...controllerEnhances) => {
+export const createController: Controller = (...controllerEnhances) => {
   
 
 

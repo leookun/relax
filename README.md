@@ -1,49 +1,53 @@
 > something are not ready,destructive changes are possible 
 #### Relax is an opinionated koa application.
 
-Minimal chained api
+CreateApp
 
 ```ts
-import "@/controller/users"
-import Application from "@leokun/koa-application";
-import {enforceController} from "@leokun/koa-controller";
-import services from '@leokun/koa-services'
-import config from "@/config";
 
-new Application(config)
-  .applyServices(services)
+import "@/controller/users/index"
+import createApp from "@leokun/koa-application";
+import config from "@/config"
+import { enforceController } from "@leokun/koa-controller";
+
+createApp(config)
   .applyController(enforceController)
-  .startTasksJob(Application.onStartTasksJob)
-  .start(Application.onStartApp)
+  .startTasksJob()
+  .start()
 
 ```
 
 Compose Controller
 
 ```ts
-import { createController, get, post, controller, prefix } from "@leokun/koa-controller";
+import { createController, get, post, controller, } from "@leokun/koa-controller";
 import * as User from "@/services/User"
 
 createController(
-  prefix("/users"),
-  get("/index"),
+  get("/list"),
   controller(async (ctx) => {
-    ctx.body = await User.getUsers()
+    ctx.reply(await User.getUsers())
   })
 );
 
 createController(
-  prefix("/users"),
   post("/register"),
-  controller(async (ctx) => {
-    const {email,password}=ctx.request.body as {email:string,password:string}
-    ctx.body = (await User.register(email,password))
+  controller<{email:string,password:string}>(async (ctx) => {
+    const {email,password}=ctx.request.body;
+    ctx.requireCheck({email,password})
+    ctx.logger.info(`🎉 New User Registed: ${email}`)
+    ctx.reply(await User.register(email,password))
+    ctx.sendCodeEmail("xxx@gmial.com",{
+      userName:ctx.body,
+      code:`123456`,
+    })
   })
 );
 
+
 ```
 
-Prisma as Services
+Atom Services
 
 ```ts
 import services from '@leokun/koa-services'

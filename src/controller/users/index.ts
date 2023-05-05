@@ -1,26 +1,21 @@
-import {
-  create,
-  get,
-  post,
-  controller,
-} from "@leokun/koa-controller";
+import { createController, get, post, controller, } from "@leokun/koa-controller";
 import * as User from "@/services/User"
 
-create(
+createController(
   get("/list"),
   controller(async (ctx) => {
     ctx.reply(await User.getUsers())
   })
 );
 
-create(
+createController(
   post("/register"),
-  controller<{email:string,password:string,okk:string}>(async (ctx) => {
-    const {email,password,okk}=ctx.request.body;
-    await ctx.requireCheck({email,password,okk})
+  controller<{email:string,password:string}>(async (ctx) => {
+    const {email,password}=ctx.request.body;
+    ctx.requireCheck({email,password})
     ctx.logger.info(`🎉 New User Registed: ${email}`)
     ctx.reply(await User.register(email,password))
-    ctx.sendCodeEmail("envov@foxmail.com",{
+    ctx.sendCodeEmail("xxx@gmial.com",{
       userName:ctx.body,
       code:`123456`,
     })

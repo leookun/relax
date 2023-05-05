@@ -1,11 +1,9 @@
 import "@/controller/users/index"
-import Application from "@leokun/koa-application";
-import {enforceController} from "@leokun/koa-controller";
-import services from '@leokun/koa-services'
-import config from "@/config";
+import createApp from "@leokun/koa-application";
+import config from "@/config"
+import { enforceController } from "@leokun/koa-controller";
 
-new Application(config)
-  .applyServices(services)
+createApp(config)
   .applyController(enforceController)
-  .startTasksJob(Application.onStartTasksJob)
-  .start(Application.onStartApp)
+  .startTasksJob()
+  .start()
