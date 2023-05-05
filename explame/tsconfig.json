@@ -1,0 +1,23 @@
+{
+  "extends": "@leokun/typescript-config",
+  "compilerOptions": {
+    "strict": false,
+    "baseUrl": ".",
+    "paths": {
+      "@/*": [
+        "src/*"
+      ]
+    },
+    "typeRoots": [
+      "types/**/*",
+      "packages/*/types/**/*",
+      "node_modules/@types/**/*"
+    ]
+  },
+  "include": [
+    "src/**/*"
+  ],
+  "exclude": [
+    "tests"
+  ],
+}

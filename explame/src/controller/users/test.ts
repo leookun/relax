@@ -1,4 +1,4 @@
-import { createController, controller } from "@leokun/koa-controller";
+import { createController, controller } from "@leokun/relax";
 
 createController(
   controller(async (ctx)=>{

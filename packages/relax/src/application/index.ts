@@ -1,25 +1,17 @@
 import Koa from "koa";
 import nodemailer from "nodemailer";
 import {createClient} from "redis";
-import { enforceController } from "@leokun/koa-controller";
-
+import { enforceController } from "../controller";
 import jwt from "koa-jwt";
-import { fileURLToPath } from 'url';
-import path,{resolve}from 'path';
+import {resolve}from 'path';
 import {globSync} from 'glob';
-import fs from 'node:fs';
 import bodyParser from "koa-bodyparser";
 import helmet from "koa-helmet";
 import { Logger, LoggerLevel } from "./common/logger";
 import { Config } from "./common/config";
 import { CronJob, CronCommand } from "cron";
 import * as R from "ramda"
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
-const CODE_EMAIL_TEMPLATE=
-fs.readFileSync(resolve(__dirname,"./common/verification-code.template"),"utf-8")
-
+import CODE_EMAIL_TEMPLATE from "./common/verification-code"
 export * from "./common/config";
 export * from "./common/logger";
 export type SendCodeEmail=(to:string,body:{code:string,userName:string})=>Promise<true>
@@ -27,7 +19,7 @@ export type RequireCheck=(params:Record<string,unknown>)=>void
 export type Reply=<T,>(params?:T)=>void
 export type ErrorReply=<T,>(msg:T)=>void
 export type Redis=ReturnType<typeof createClient>
-const createApp=(config:Config)=>{
+export const createApp=(config:Config)=>{
   let hasController=false;
   let hasDefaultMiddlewares=false
   const logger=new Logger();
@@ -180,7 +172,7 @@ const createApp=(config:Config)=>{
     })
   return app
 }
-export default createApp
+  
 export type Application=ReturnType<typeof createApp>
 export const onStartApp=(port:string|number)=>{
   new Logger().info(`App Started Success On Port ${port}!`);

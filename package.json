@@ -3,42 +3,15 @@
   "version": "1.0.0",
   "main": "dist/app.js",
   "type": "module",
-  "private": true,
-  "workspaces": [
-    "packages/*"
-  ],
   "scripts": {
-    "dev": "npm run typescript src/main.ts ",
-    "dev:watch": "nodemon",
-    "typescript": "cross-env NODE_NO_WARNINGS=1 node --loader @esbuild-kit/esm-loader",
-    "db": "docker compose  -f ./docker/docker-compose.yml up -d",
-    "lint": "eslint --fix .",
-    "prisma:generate": "prisma generate",
-    "prisma:push": "prisma db push",
-    "prod": "prisma migrate deploy"
+    "explame": "docker compose  -f ./docker/docker-compose.yml up -d && cd ./explame && npm run dev",
+    "lint": "eslint --fix ."
   },
   "devDependencies": {
-    "@esbuild-kit/esm-loader": "^2.5.5",
-    "@types/nodemailer": "^6.4.7",
-    "@types/ramda": "^0.29.1",
-    "cross-env": "^7.0.3",
-    "eslint": "^8.39.0"
-  },
-  "dependencies": {
+    "eslint": "^8.39.0",
+    "typescript": "^4",
     "@leokun/eslint-config": "^0.0.4",
-    "@leokun/koa-application": "0.0.1",
-    "@leokun/koa-controller": "0.0.1",
-    "@leokun/typescript-config": "0.0.1",
-    "@prisma/client": "4.13.0",
-    "@prisma/engines": "^4.13.0",
-    "dayjs": "^1.11.7",
-    "dotenv": "^8.2.0",
-    "glob": "^10.2.2",
-    "nanoid": "^4.0.2",
-    "prisma": "^4.13.0",
-    "ramda": "^0.29.0",
-    "redis": "^4.6.6",
-    "typescript": "^4"
+    "@leokun/typescript-config": "^0.0.3"
   },
   "config": {
     "commitizen": {

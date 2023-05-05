@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
-import type { Config } from "@leokun/koa-application";
+import type { Config } from "@leokun/relax/src/application";
 const config: Config = {
   redis:process.env.REDIS_URL,
   port: process.env.PORT || 3000,

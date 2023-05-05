@@ -1,4 +1,4 @@
-import { createController, get, post, controller } from "@leokun/koa-controller";
+import { createController, get, post, controller } from "@leokun/relax";
 import * as User from "@/services/User"
 export type Register={email:string,code:string,password:string}
 

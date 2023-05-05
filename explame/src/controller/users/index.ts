@@ -1,4 +1,4 @@
-import { createController, get, controller } from "@leokun/koa-controller";
+import { createController, get, controller } from "@leokun/relax";
 import * as User from "@/services/User"
 
 createController(

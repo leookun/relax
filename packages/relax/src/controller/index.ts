@@ -3,8 +3,9 @@ import compose from 'koa-compose';
 import {
   SendCodeEmail,
   RequireCheck,Reply,ErrorReply, Application,Redis
-} from '@leokun/koa-application';
-import { Logger } from "@leokun/koa-application/src/common/logger";
+} from '../application';
+import { Logger } from "../application/common/logger";
+
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
 export type State<T = unknown> = [T, (setter: Setter<T>) => T];
@@ -17,9 +18,10 @@ export type ContextT<RquestBodyT = any> = DefaultContext&{
   error: ErrorReply;
   redis: Redis;
 }
+export type Method = 'post' | 'get';
 export type ControllerEnhanceParam = {
   swaggerState: State<{}>;
-  methodState: State<string>;
+  methodState: State<Method>;
   pathState: State<string>;
   prefixState: State<string>;
   next: Middleware;
@@ -27,11 +29,11 @@ export type ControllerEnhanceParam = {
 
 export type ControllerEnhance = <
   StateT = DefaultState,
-  ContextT = DefaultContext,
   ResponseBodyT = any
 >(
   param: ControllerEnhanceParam
-) => Middleware;
+) => Middleware<StateT,ContextT,ResponseBodyT>;
+
 export type Controller = (
   ...controllerEnhance: ControllerEnhance[]
 ) => Router<{}>;
@@ -46,7 +48,7 @@ export const enforceController=(app:Application)=>{
 }
 
 export const createController: Controller = (...controllerEnhances) => {
-  type Method = 'post' | 'get';
+
   let path = '/',
     method: Method = 'get',
     swagger = {},
@@ -110,7 +112,7 @@ export const createController: Controller = (...controllerEnhances) => {
   );
   const middleware = compose(middlewares);
   const router = new Router({prefix: prefix || '',});
-  router[method](path, middleware);
+  router[method](path, middleware as unknown as any);
   Routers.push(router)
   return router;
 };
@@ -148,7 +150,7 @@ RquestBodyT={},
 ResponseBodyT = any,
 StateT = DefaultState
 >
-  (middleware: Middleware<StateT,ContextT<RquestBodyT>,ResponseBodyT>): ControllerEnhance =>
+  (middleware: Middleware<StateT,ContextT<RquestBodyT>,ResponseBodyT>): any =>
     () => {
       return middleware;
-    };
+    }

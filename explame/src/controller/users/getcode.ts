@@ -1,4 +1,4 @@
-import { createController, get, post, controller,ContextT} from "@leokun/koa-controller";
+import { createController, get, post, controller,ContextT} from "@leokun/relax";
 import * as User from "@/services/User"
 import dayjs from "dayjs"
 

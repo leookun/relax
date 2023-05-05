@@ -1,0 +1,32 @@
+{
+  "name": "@leokun/relax",
+  "version": "1.0.0",
+  "main": "dist/app.js",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run typescript src/main.ts ",
+    "dev:watch": "nodemon",
+    "typescript": "cross-env NODE_NO_WARNINGS=1 node --loader @esbuild-kit/esm-loader",
+    "db": "docker compose  -f ../docker/docker-compose.yml up -d",
+    "prisma:generate": "prisma generate",
+    "prisma:push": "prisma db push",
+    "prod": "prisma migrate deploy"
+  },
+  "devDependencies": {
+    "@esbuild-kit/esm-loader": "^2.5.5",
+    "@types/node": "^20.0.0",
+    "cross-env": "^7.0.3",
+    "typescript": "^4"
+  },
+  "dependencies": {
+    "@leokun/relax": "^0.0.7",
+    "@leokun/typescript-config": "^0.0.3",
+    "@prisma/client": "4.13.0",
+    "@prisma/engines": "^4.13.0",
+    "dayjs": "^1.11.7",
+    "dotenv": "^8.2.0",
+    "nanoid": "^4.0.2",
+    "prisma": "^4.13.0",
+    "redis": "^4.6.6"
+  }
+}
