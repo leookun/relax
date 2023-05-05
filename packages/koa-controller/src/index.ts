@@ -1,6 +1,6 @@
 import Router from 'koa-router';
 import compose from 'koa-compose';
-import {SendCodeEmail,RequireCheck,Reply,Application} from '@leokun/koa-application';
+import {SendCodeEmail,RequireCheck,Reply,Application,Redis} from '@leokun/koa-application';
 import { Logger } from "@leokun/koa-application/src/common/logger";
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
@@ -143,6 +143,7 @@ ContextT = DefaultContext&{
   sendCodeEmail: SendCodeEmail;
   requireCheck: RequireCheck;
   reply: Reply;
+  redis: Redis;
 },
 StateT = DefaultState
 >

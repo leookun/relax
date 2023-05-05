@@ -1,5 +1,6 @@
 import Koa from "koa";
 import nodemailer from "nodemailer";
+import {createClient} from "redis";
 import jwt from "koa-jwt";
 import { fileURLToPath } from 'url';
 import path ,{resolve}from 'path';
@@ -20,19 +21,18 @@ export * from "./common/config";
 export * from "./common/logger";
 export type SendCodeEmail=(to:string,body:{code:string,userName:string})=>Promise<true>
 export type RequireCheck=(params:Record<string,unknown>)=>void
-export type Reply=<T,>(params:T)=>void
-
-
-
+export type Reply=<T,>(params?:T)=>void
+export type Redis=ReturnType<typeof createClient>
 const createApp=(config:Config)=>{
-  const logger=new Logger();
   let hasController=false;
+  let hasDefaultMiddlewares=false
+  const logger=new Logger();
+  const redis:Redis=createClient({url:config.redis})
   const emailClient = nodemailer.createTransport({
     host: config.email?.host||'',
     service: config.email.service||'',
     auth: config.email
   });
-
   const sendCodeEmail:SendCodeEmail=async (to,body)=>{
     return new Promise((resolve,reject)=>{
       emailClient.sendMail({
@@ -55,11 +55,19 @@ const createApp=(config:Config)=>{
     {
       emailClient,
       sendCodeEmail,
-      start(callback?: (port?:number|string) => void) {
+      async start(callback?: (port?:number|string) => void) {
         if(!hasController){
           logger.error("Services Not For Ready. Call `applyServices` First")
           return 
         }
+        try {
+          await redis.connect();
+          logger.info("Redis Connected Success!")
+        } catch (error) {
+          logger.error(`Redis Connected Fail: ${error}`)
+          process.exit(-1)
+        }
+       
         const { port } = config;
         app.listen(port, ()=>(callback||onStartApp)(port));
         return app;
@@ -67,6 +75,7 @@ const createApp=(config:Config)=>{
       async loggerMiddleware(ctx: Koa.Context, next: Koa.Next) {
         const start = new Date().getTime();
         try {
+          ctx.logger=logger
           await next();
         } catch (error) {
           ctx.status = error.status || 500;
@@ -84,12 +93,12 @@ const createApp=(config:Config)=>{
             error:msg,
             message:error.message||'',
           }
-          new Logger().log(logLevel, `${msg} :${error.message}`);
+          new Logger().log(logLevel, `${msg} 响应信息:${error.message}`);
         }
       },
       async replyMiddleware(ctx: Koa.Context, next: Koa.Next){
         const reply:Reply=(body)=>{
-          ctx.body={data:body}
+          ctx.body={data:body||null}
         }
         ctx.reply=reply
         await next()
@@ -111,27 +120,33 @@ const createApp=(config:Config)=>{
         ctx.requireCheck=requireCheck
         await next()
       },
-      applyEmail(){
-       
-       
-        app.use(async(ctx,next)=>{
-          ctx.emailClient=emailClient;
-          ctx.sendCodeEmail=sendCodeEmail;
-          await next()
-        });
+      async redisMiddleware(ctx: Koa.Context, next: Koa.Next){
+        ctx.redis=redis
+        await next()
+      },
+      async emailMiddleware(ctx: Koa.Context, next: Koa.Next){
+        ctx.emailClient=emailClient;
+        ctx.sendCodeEmail=sendCodeEmail;
+        await next()
       },
       applyMiddleware() {
-        app.use(helmet());
-        app.use(bodyParser());
-        // ctx.reply format
-        app.use(app.replyMiddleware)
-        // errorcatch and logger 
-        app.use(app.loggerMiddleware);
-        // RequireCheck
-        app.use(app.requireCheckMiddleware)
+        if(!hasDefaultMiddlewares){
+          app.use(helmet());
+          app.use(bodyParser());
+          // ctx.reply format
+          app.use(app.replyMiddleware)
+          // errorcatch and logger 
+          app.use(app.loggerMiddleware);
+          // RequireCheck
+          app.use(app.requireCheckMiddleware)
+          app.use(app.redisMiddleware)
+          app.use(app.emailMiddleware)
+          hasDefaultMiddlewares=true
+        }
         return app;
       },
       applyController(enforceController:(app: any) => any) {
+        app.applyMiddleware()
         hasController=true
         enforceController(app)
         return app;
@@ -147,12 +162,11 @@ const createApp=(config:Config)=>{
     })
   return app
 }
-
 export default createApp
 export type Application=ReturnType<typeof createApp>
 export const onStartApp=(port:string|number)=>{
-  new Logger().info(`App Started On Port ${port}`);
+  new Logger().info(`App Started Success On Port ${port}!`);
 }
 export const onStartTasksJob=()=>{
-  new Logger().info("TasksJobs Started!");
+  new Logger().info("Tasksjobs Started Success!");
 }

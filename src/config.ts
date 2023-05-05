@@ -1,18 +1,16 @@
 import dotenv from "dotenv";
 dotenv.config({ path: ".env" });
 import type { Config } from "@leokun/koa-application";
-const isDevMode = process.env.NODE_ENV == "development";
 const config: Config = {
+  redis:process.env.REDIS_URL,
   port: process.env.PORT || 3000,
-  debugLogging: isDevMode,
   jwtSecret: process.env.JWT_SECRET || "",
-  databaseUrl:
-    process.env.DATABASE_URL || "postgres://user:pass@localhost:5432/apidb",
+  databaseUrl: process.env.DATABASE_URL,
   cronJobExpression: "* * * * *",
   email:{
-    service:'qq',
-    user:"envov@foxmail.com",
-    pass:"mmfyjjblvvxzcdei"
+    service:process.env.EMAIL_SERVICES,
+    user:process.env.EMAIL_USER,
+    pass:process.env.EMAIL_PASSWORD,
   }
 };
 

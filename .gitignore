@@ -1,5 +1,7 @@
 .env
 logs
+redis-data
+redis-logs
 node_modules
 bower_components
 migrations

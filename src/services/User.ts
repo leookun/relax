@@ -16,3 +16,6 @@ export  async function register(email: string, password: string) {
 export async function getUsers() {
   return (await services.user.findMany({select:{userName:true}})).map(v=>v.userName)
 }
+export function genNum(length=6){
+  return customAlphabet('0123456789', length)()
+}
