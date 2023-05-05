@@ -14,7 +14,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const CODE_EMAIL_TEMPLATE=
-fs.readFileSync(resolve(__dirname,"./common/verification-code.html"),"utf-8")
+fs.readFileSync(resolve(__dirname,"./common/verification-code.template"),"utf-8")
 
 export * from "./common/config";
 export * from "./common/logger";

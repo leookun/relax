@@ -36,5 +36,10 @@
     "nanoid": "^4.0.2",
     "prisma": "^4.13.0",
     "typescript": "^4"
+  },
+  "config": {
+    "commitizen": {
+      "path": "cz-conventional-changelog"
+    }
   }
 }
