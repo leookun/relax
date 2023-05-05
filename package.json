@@ -28,7 +28,6 @@
     "@leokun/eslint-config": "0.0.1",
     "@leokun/koa-application": "0.0.1",
     "@leokun/koa-controller": "0.0.1",
-    "@leokun/koa-services": "0.0.1",
     "@leokun/typescript-config": "0.0.1",
     "@prisma/client": "4.13.0",
     "@prisma/engines": "^4.13.0",

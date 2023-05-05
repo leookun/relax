@@ -1,6 +1,6 @@
 import { customAlphabet } from 'nanoid';
 const nanoid = customAlphabet('123456789QWERTYUPASDFGHJKZXCVBNM', 10);
-import services from '@leokun/koa-services'
+import services from "@/services"
 
 export  async function register(email: string, password: string) {
   const registedUser=await services.user.findFirst({where:{email}})
