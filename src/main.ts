@@ -1,4 +1,4 @@
-import "@/controller/users"
+import "@/controller/users/index"
 import Application from "@leokun/koa-application";
 import {enforceController} from "@leokun/koa-controller";
 import services from '@leokun/koa-services'

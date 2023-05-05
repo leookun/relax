@@ -4,4 +4,10 @@ export interface Config {
   jwtSecret: string;
   databaseUrl: string;
   cronJobExpression: string;
+  email: {
+    host?:string,
+    service?:string,
+    user:string,
+    pass:string,
+  };
 }

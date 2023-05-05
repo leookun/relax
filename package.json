@@ -19,6 +19,7 @@
   },
   "devDependencies": {
     "@esbuild-kit/esm-loader": "^2.5.5",
+    "@types/nodemailer": "^6.4.7",
     "cross-env": "^7.0.3",
     "eslint": "^8.39.0"
   },

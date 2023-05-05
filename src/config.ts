@@ -9,6 +9,11 @@ const config: Config = {
   databaseUrl:
     process.env.DATABASE_URL || "postgres://user:pass@localhost:5432/apidb",
   cronJobExpression: "* * * * *",
+  email:{
+    service:'qq',
+    user:"envov@foxmail.com",
+    pass:"mmfyjjblvvxzcdei"
+  }
 };
 
 export default config;

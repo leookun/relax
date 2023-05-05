@@ -1,6 +1,7 @@
 import Router from 'koa-router';
 import compose from 'koa-compose';
-import Application from '@leokun/koa-application';
+import Application,{SendCodeEmail} from '@leokun/koa-application';
+import { Logger } from "@leokun/koa-application/src/common/logger";
 import { Middleware, DefaultState, DefaultContext } from 'koa';
 export type Setter<T = any> = (state: T) => T;
 export type State<T = unknown> = [T, (setter: Setter<T>) => T];
@@ -32,12 +33,32 @@ export const enforceController=(app:Application)=>{
   return app
 }
 
-export const createController: Controller = (...controllerEnhances) => {
+export const create: Controller = (...controllerEnhances) => {
+  
+
+
   type Method = 'post' | 'get';
   let path = '/',
     method: Method = 'get',
     swagger = {},
     prefix = '';
+
+  const orig = Error.prepareStackTrace;
+  Error.prepareStackTrace = function(_, stack){ return stack; };
+  const err = new Error;
+  const stack = err.stack as unknown as any[];
+  Error.prepareStackTrace = orig;
+  const stackFolderName:string=stack[1]?.getFileName?.()||''
+  if(stackFolderName){
+
+    const [_,firstLeavel,secondLevel]:string[]=stackFolderName.match(
+      /* eslint-disable-next-line no-useless-escape */
+      /\/([^/]+)\/([^/\.]+)\.\w+$/
+    )||[]
+    if(firstLeavel&&secondLevel){
+      prefix=`/${firstLeavel}${secondLevel==='index'?'':'/'+secondLevel}`
+    }
+  } 
   const pathState: State<typeof path> = [
     path,
     (setter) => {
@@ -112,12 +133,16 @@ export const prefix =
       return next;
     };
 
+
 export const controller =<
 RquestBodyT={},
 ResponseBodyT = any,
-ContextT = DefaultContext&{request:{body:Partial<RquestBodyT>}},
-StateT = DefaultState, 
-
+ContextT = DefaultContext&{
+  request:{body:Partial<RquestBodyT>},
+  logger: InstanceType<typeof Logger>;
+  sendCodeEmail: SendCodeEmail;
+},
+StateT = DefaultState
 >
   (middleware: Middleware<StateT,ContextT,ResponseBodyT>): ControllerEnhance =>
     () => {
