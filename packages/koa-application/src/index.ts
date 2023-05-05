@@ -9,7 +9,7 @@ import helmet from "koa-helmet";
 import { Logger, LoggerLevel } from "./common/logger";
 import { Config } from "./common/config";
 import { CronJob, CronCommand } from "cron";
-
+import * as R from "ramda"
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -19,6 +19,8 @@ fs.readFileSync(resolve(__dirname,"./common/verification-code.template"),"utf-8"
 export * from "./common/config";
 export * from "./common/logger";
 export type SendCodeEmail=(to:string,body:{code:string,userName:string})=>Promise<true>
+export type RequireCheck=(params:Record<string,unknown>)=>void
+export type Reply=<T,>(params:T)=>void
 export default class Application extends Koa {
   public config: Config = {
     port: process.env.PORT || 3000,
@@ -65,9 +67,37 @@ export default class Application extends Koa {
         logLevel = "info";
       }
       const msg = `${ctx.method} ${ctx.originalUrl} ${ctx.status} ${ms}ms`;
-      ctx.body = msg;
+      ctx.body = {
+        error:msg,
+        message:error.message||'',
+
+      }
       new Logger().log(logLevel, `${msg} :${error.message}`);
     }
+  }
+  public async replyMiddleware(ctx: Koa.Context, next: Koa.Next){
+    const reply:Reply=(body)=>{
+      ctx.body={data:body}
+    }
+    ctx.reply=reply
+    await next()
+  }
+  public async requireCheckMiddleware(ctx: Koa.Context, next: Koa.Next){
+    const requireCheck:RequireCheck=(params)=>{
+      Object.keys(params).forEach(key=>{
+        const value=params[key]
+        // not null undefinded
+        if(R.isNil(value)){
+          throw new Error(`${key} is require`)
+        }
+        // not '' [] {}  (0 is okey)
+        if(R.isEmpty(value)){
+          throw new Error(`${key} is require`)
+        }
+      })
+    }
+    ctx.requireCheck=requireCheck
+    await next()
   }
   public applyEmail(){
     const emailClient = nodemailer.createTransport({
@@ -104,12 +134,13 @@ export default class Application extends Koa {
   }
   public applyMiddleware() {
     this.use(helmet());
-    this.use(this.loggerMiddleware);
     this.use(bodyParser());
-    this.use(async (ctx,next)=>{
-      ctx.logger=this.logger
-      await next()
-    })
+    // ctx.reply format
+    this.use(this.replyMiddleware)
+    // errorcatch and logger 
+    this.use(this.loggerMiddleware);
+    // RequireCheck
+    this.use(this.requireCheckMiddleware)
     return this;
   }
   public applyController(enforceController: (app: Application) => Application) {
