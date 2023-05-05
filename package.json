@@ -25,7 +25,7 @@
     "eslint": "^8.39.0"
   },
   "dependencies": {
-    "@leokun/eslint-config": "0.0.1",
+    "@leokun/eslint-config": "^0.0.4",
     "@leokun/koa-application": "0.0.1",
     "@leokun/koa-controller": "0.0.1",
     "@leokun/typescript-config": "0.0.1",

@@ -1,5 +1,6 @@
 .env
 logs
+dist
 redis-data
 redis-logs
 node_modules
