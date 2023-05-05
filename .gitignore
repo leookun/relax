@@ -1,0 +1,10 @@
+.env
+logs
+node_modules
+bower_components
+.idea
+*.iml
+.DS_Store
+Thumbs.db
+dist/**/*
+*.log
