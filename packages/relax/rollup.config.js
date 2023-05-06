@@ -9,7 +9,11 @@ const bundle = config => ({
   input: 'src/index.ts',
   external: id => !/^[./]/.test(id),
 })
-console.log(resolve(__dirname,"../../tsconfig.json"))
+const bundleDotenv = config => ({
+  ...config,
+  input: 'src/dotenv.ts',
+  external: id => !/^[./]/.test(id),
+})
 export default [
   bundle({
     plugins: [esbuild()],
@@ -26,6 +30,17 @@ export default [
       },
     ],
   }),
+  bundleDotenv({
+    plugins: [esbuild()],
+    output: [
+      {
+        file: `dotenv.js`,
+        format: 'es',
+        sourcemap: false,
+      }
+    ],
+  }),
+  
   bundle({
     plugins: [dts()],
     output: {

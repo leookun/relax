@@ -3,7 +3,7 @@ import nodemailer from "nodemailer";
 import { createClient } from "redis";
 import { enforceController } from "../controller";
 import jwt from "koa-jwt";
-import dotenv from "dotenv";
+
 import { resolve } from 'path';
 import { globSync } from 'glob';
 import bodyParser from "koa-bodyparser";
@@ -189,11 +189,4 @@ export const onStartApp = (port: string | number) => {
 }
 export const onStartTasksJob = () => {
   new Logger().info("Tasksjobs Started Success!");
-}
-export const enforceConfig = () => {
-  dotenv.config({ path: "universal.env", override: true });
-  dotenv.config({ path: ".env", override: true });
-  if (process.env.NODE_ENV) {
-    dotenv.config({ path: `${process.env.NODE_ENV}.env`, override: true });
-  }
 }
