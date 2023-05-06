@@ -152,6 +152,15 @@ export const createApp=(config:Config)=>{
         hasController=true
         const controllerPaths=globSync([
           resolve(process.cwd(),"./src/controller","./**/*.ts"),
+          resolve(process.cwd(),"./src/controller","./**/*.js"),
+
+          resolve(process.cwd(),"./controller","./**/*.js"),
+          "!"+resolve(process.cwd(),"./controller","./**/*.js"),
+
+           resolve(process.cwd(),"./controller","./**/*.ts"),
+          "!"+resolve(process.cwd(),"./controller","./**/*.ts"),
+
+          "!"+resolve(process.cwd(),"./src/controller","./**/*.js"),
           "!"+resolve(process.cwd(),"./src/controller","./**/*.ts")
         ])
         Promise.all(controllerPaths.map(async path=>{

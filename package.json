@@ -8,10 +8,10 @@
     "lint": "eslint --fix ."
   },
   "devDependencies": {
-    "eslint": "^8.39.0",
-    "typescript": "^4",
     "@leokun/eslint-config": "^0.0.4",
-    "@leokun/typescript-config": "^0.0.3"
+    "@leokun/typescript-config": "^0.0.4",
+    "eslint": "^8.39.0",
+    "typescript": "^4"
   },
   "config": {
     "commitizen": {
