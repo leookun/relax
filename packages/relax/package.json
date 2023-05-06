@@ -1,6 +1,6 @@
 {
   "name": "@leokun/relax",
-  "version": "0.0.14",
+  "version": "0.0.15",
   "main": "dist/index.js",
   "type": "module",
   "module": "dist/index.js",

@@ -40,6 +40,7 @@ export const createApp = (config: Config) => {
           .replace("{{CODE}}", body.code)
       }, function (error, info) {
         if (error) {
+          logger.error(`Email Unable To ${to} :[${body.userName},${body.code}]`)
           reject(error)
         } else {
           logger.info(`Email Sended To ${to} :[${body.userName},${body.code}]`)
